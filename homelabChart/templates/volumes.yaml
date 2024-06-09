@@ -1,0 +1,84 @@
+# PersistentVolumes and PersistentVolumeClaims for movies, TV shows, and config
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: movies-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.movies.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.movies.path}}
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tv-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.tv.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.tv.path}}
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: movies-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.volumes.movies.size }}
+  storageClassName: local-path 
+  volumeName: movies-pv
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tv-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.volumes.tv.size }}
+  storageClassName: local-path 
+  volumeName: tv-pv
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  volumeName: config-pv

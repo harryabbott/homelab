@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex
+  labels:
+    app: plex
+spec:
+  replicas: 1  # Number of Plex instances
+  selector:
+    matchLabels:
+      app: plex
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      containers:
+        - name: plex
+          image: plexinc/pms-docker:{{ .Values.plex.version }}  # Plex Docker image
+          ports:
+            - containerPort: {{ .Values.service.port }}  # Plex server port
+          volumeMounts:
+            - name: movies-storage
+              mountPath: /data/movies  # Mount path for movies
+            - name: tv-storage
+              mountPath: /data/tv  # Mount path for TV shows
+            - name: config-storage
+              mountPath: /config  # Mount path for config
+      volumes:
+        - name: movies-storage
+          persistentVolumeClaim:
+            claimName: movies-pvc  # PVC for movies
+        - name: tv-storage
+          persistentVolumeClaim:
+            claimName: tv-pvc  # PVC for TV shows
+        - name: config-storage
+          persistentVolumeClaim:
+            claimName: config-pvc  # PVC for config
