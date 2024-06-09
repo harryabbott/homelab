@@ -1,7 +1,7 @@
 # Volume sizes for different data directories
 volumes:
   movies:
-    size: "50Gi"  # Size of the movies volume
+    size: "100Gi"  # Size of the movies volume
     path: "/mnt/data/movies"
   tv:
     size: "100Gi"  # Size of the TV shows volume
@@ -17,3 +17,8 @@ service:
 
 plex:
   version: "1.40.2.8395-c67dce28e"
+
+radarr:
+  version: "5.6.0.8846-ls222"
+sonarr:
+  version: "4.0.5.1710-ls241"

@@ -1,0 +1,94 @@
+#TODO FIX VOLUMES HERE
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-sonarr
+  labels:
+    app: sonarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+        - name: sonarr
+          image: linuxserver/sonarr:{{ .Values.sonarr.version }}"
+          ports:
+            - containerPort: 8989
+              name: sonarr
+          volumeMounts:
+            - name: config
+              mountPath:
+            - name: tv
+              mountPath:
+            - name: movies
+              mountPath:
+            - name: torrents
+              mountPath:
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName:
+        - name: tv
+          persistentVolumeClaim:
+            claimName: 
+        - name: movies
+          persistentVolumeClaim:
+            claimName:
+        - name: torrents
+          hostPath:
+            path:
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-radarr
+  labels:
+    app: radarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: radarr
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      containers:
+        - name: radarr
+          image: "linuxserver/radarr:{{ .Values.radarr.version }}"
+          ports:
+            - containerPort: 7878
+              name: radarr
+          volumeMounts:
+            - name: config
+              mountPath: 
+            - name: tv
+              mountPath: {{ .Values.persistence.tv.mountPath }}
+            - name: movies
+              mountPath: {{ .Values.persistence.movies.mountPath }}
+            - name: torrents
+              mountPath: {{ .Values.persistence.torrents.path }}
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.config.existingClaim }}
+        - name: tv
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.tv.existingClaim }}
+        - name: movies
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.movies.existingClaim }}
+        - name: torrents
+          hostPath:
+            path: {{ .Values.persistence.torrents.path }}

@@ -2,6 +2,6 @@
 ## Steps
 - Install helm `curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash`
 
-- Super hi-tech deployment command `helm template . -f values.yaml > applyMe.yaml && kubectl apply -f applyMe.yaml`
+- Run helm install (from the repo root) to apply the chart `helm install media .`
 
 

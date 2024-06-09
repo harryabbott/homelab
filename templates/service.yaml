@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-plex
+  labels:
+    app: plex
+spec:
+  type: ClusterIP # It can be NodePort, LoadBalancer, etc. based on your requirements
+  ports:
+    - port: 32400 # Service port
+      targetPort: 32400 # Container port
+  selector:
+    app: plex
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-sonarr
+  labels:
+    app: sonarr
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8989
+      targetPort: 8989
+  selector:
+    app: sonarr
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-radarr
+  labels:
+    app: radarr
+spec:
+  type: ClusterIP
+  ports:
+    - port: 7878
+      targetPort: 7878
+  selector:
+    app: radarr

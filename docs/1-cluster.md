@@ -2,6 +2,8 @@
 ## Ubuntu 22 LTS
 machine hostname 'hp-elite'
 
+I have my router DHCP set to assign my server to 192.168.1.154. You'll wanna do this or ctrl+f and replace with your homelabs local ip (if anywhere). 
+
 This is for when the homelab inevitably breaks, so i can rebuild it to the same (low) standards.
 
 
@@ -15,9 +17,10 @@ This is for when the homelab inevitably breaks, so i can rebuild it to the same 
 
 - Install kubectl `curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"` then `sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl`
 
-- Alias kubectl `echo 'alias k=kubectl' >> ~/.bashrc`
+- (Optional) Alias kubectl `echo 'alias k=kubectl' >> ~/.bashrc`
 
 - Install k3s `curl -sfL https://get.k3s.io | sh -`
 
 - Enable k3s `sudo systemctl enable k3s`
 
+- Create the hosts mount paths with `./localvolumes.sh`
