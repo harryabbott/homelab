@@ -20,5 +20,6 @@ plex:
 
 radarr:
   version: "5.6.0.8846-ls222"
+
 sonarr:
   version: "4.0.5.1710-ls241"

@@ -1,0 +1,113 @@
+#####################################################
+### CONFIG
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce #only plex pod has R/W on plex conf
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  volumeName: plex-config-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: radarr-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce #only plex pod has R/W on plex conf
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  volumeName: radarr-config-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarr-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce #only plex pod has R/W on plex conf
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  volumeName: sonarr-config-pv
+
+---
+
+#####################################################
+### PLEX MEDIA
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-movies-pvc
+spec:
+  accessModes:
+    - ReadOnlyMany #plex pvc read only on media
+  resources:
+    requests:
+      storage: {{ .Values.volumes.movies.size }}
+  storageClassName: local-path 
+  volumeName: movies-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-tv-pvc
+spec:
+  accessModes:
+    - ReadOnlyMany #plex pvc read only on media
+  resources:
+    requests:
+      storage: {{ .Values.volumes.tv.size }}
+  storageClassName: local-path 
+  volumeName: tv-pv
+
+---
+
+#####################################################
+### SONARR MEDIA
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarr-tv-pvc
+spec:
+  accessModes:
+    - ReadWriteMany #plex pvc read only on media
+  resources:
+    requests:
+      storage: {{ .Values.volumes.tv.size }}
+  storageClassName: local-path 
+  volumeName: tv-pv
+
+---
+
+#####################################################
+### RADARR
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: radarr-movies-pvc
+spec:
+  accessModes:
+    - ReadWriteMany #plex pvc read only on media
+  resources:
+    requests:
+      storage: {{ .Values.volumes.movies.size }}
+  storageClassName: local-path 
+  volumeName: movies-pv

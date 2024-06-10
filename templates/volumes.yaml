@@ -1,5 +1,5 @@
-# PersistentVolumes and PersistentVolumeClaims for movies, TV shows, and config
-
+#####################################################
+### MEDIA
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -9,7 +9,7 @@ spec:
     storage: {{ .Values.volumes.movies.size }}
   storageClassName: local-path 
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   hostPath:
     path: {{ .Values.volumes.movies.path}}
 
@@ -23,62 +23,52 @@ spec:
     storage: {{ .Values.volumes.tv.size }}
   storageClassName: local-path 
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   hostPath:
     path: {{ .Values.volumes.tv.path}}
 
+
+#####################################################
+### CONFIG
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: config-pv
+  name: plex-config-pv
 spec:
   capacity:
     storage: {{ .Values.volumes.config.size }}
   storageClassName: local-path 
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   hostPath:
-    path: {{ .Values.volumes.config.path }}
+    path: {{ .Values.volumes.config.path }}/plex
 
 ---
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
-  name: movies-pvc
+  name: sonarr-config-pv
 spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.volumes.movies.size }}
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
   storageClassName: local-path 
-  volumeName: movies-pv
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/sonarr
 
 ---
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
-  name: tv-pvc
+  name: plex-config-pv
 spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.volumes.tv.size }}
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
   storageClassName: local-path 
-  volumeName: tv-pv
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/radarr
 
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: config-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.volumes.config.size }}
-  storageClassName: local-path 
-  volumeName: config-pv

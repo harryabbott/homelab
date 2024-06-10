@@ -1,4 +1,4 @@
-#TODO FIX VOLUMES HERE
+#TODO FIX TORRENTS VOLUME, MAKE MOUNT PATHS FOR VOLUMES
 
 
 apiVersion: apps/v1
@@ -28,23 +28,18 @@ spec:
               mountPath:
             - name: tv
               mountPath:
-            - name: movies
-              mountPath:
             - name: torrents
               mountPath:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName:
+            claimName: sonarr-config-pvc
         - name: tv
           persistentVolumeClaim:
-            claimName: 
-        - name: movies
+            claimName: sonarr-tv-pvc
+        - name: torrents
           persistentVolumeClaim:
             claimName:
-        - name: torrents
-          hostPath:
-            path:
 
 ---
 
@@ -72,23 +67,18 @@ spec:
               name: radarr
           volumeMounts:
             - name: config
-              mountPath: 
-            - name: tv
-              mountPath: {{ .Values.persistence.tv.mountPath }}
+              mountPath:
             - name: movies
-              mountPath: {{ .Values.persistence.movies.mountPath }}
+              mountPath:
             - name: torrents
-              mountPath: {{ .Values.persistence.torrents.path }}
+              mountPath:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.config.existingClaim }}
-        - name: tv
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.tv.existingClaim }}
+            claimName: radarr-config-pvc
         - name: movies
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.movies.existingClaim }}
+            claimName: radarr-movies-pvc
         - name: torrents
-          hostPath:
-            path: {{ .Values.persistence.torrents.path }}
+          persistentVolumeClaim:
+            claimName:
