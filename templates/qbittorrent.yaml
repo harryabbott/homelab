@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-qbittorrent
+  labels:
+    app: qbittorrent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      containers:
+        - name: qbittorrent
+          image: linuxserver/qbittorrent:{{ .Values.qbittorrent.version }}
+          ports:
+            - containerPort: 8080
+              name: qbittorrent
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: tv
+              mountPath: /data/media/tv
+            - name: movies
+              mountPath: /data/media/movies
+            - name: torrent-movies
+              mountPath: /data/torrents/movies
+            - name: torrent-tv
+              mountPath: /data/torrents/tv
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: sonarr-config-pvc
+        - name: torrent-movies
+          persistentVolumeClaim:
+            claimName: torrent-movies-pvc
+        - name: torrent-tv
+          persistentVolumeClaim:
+            claimName: torrent-tv-pvc
+        - name: movies
+          persistentVolumeClaim:
+            claimName: radarr-movies-pvc
+        - name: tv
+          persistentVolumeClaim:
+            claimName: sonarr-tv-pvc
+        

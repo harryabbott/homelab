@@ -7,7 +7,7 @@ metadata:
   name: plex-config-pvc
 spec:
   accessModes:
-    - ReadWriteOnce #only plex pod has R/W on plex conf
+    - ReadWriteOnce #only one pod has R/W on its conf
   resources:
     requests:
       storage: {{ .Values.volumes.config.size }}
@@ -22,7 +22,7 @@ metadata:
   name: radarr-config-pvc
 spec:
   accessModes:
-    - ReadWriteOnce #only plex pod has R/W on plex conf
+    - ReadWriteOnce #only one pod has R/W on its conf
   resources:
     requests:
       storage: {{ .Values.volumes.config.size }}
@@ -37,12 +37,27 @@ metadata:
   name: sonarr-config-pvc
 spec:
   accessModes:
-    - ReadWriteOnce #only plex pod has R/W on plex conf
+    - ReadWriteOnce #only one pod has R/W on its conf
   resources:
     requests:
       storage: {{ .Values.volumes.config.size }}
   storageClassName: local-path 
   volumeName: sonarr-config-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: torrent-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce #only 1 pod has R/W on its conf
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  volumeName: torrent-config-pv
 
 ---
 
@@ -54,12 +69,12 @@ metadata:
   name: plex-movies-pvc
 spec:
   accessModes:
-    - ReadOnlyMany #plex pvc read only on media
+    - ReadWriteMany 
   resources:
     requests:
       storage: {{ .Values.volumes.movies.size }}
   storageClassName: local-path 
-  volumeName: movies-pv
+  volumeName: plex-movies-pv
 
 ---
 
@@ -69,12 +84,12 @@ metadata:
   name: plex-tv-pvc
 spec:
   accessModes:
-    - ReadOnlyMany #plex pvc read only on media
+    - ReadWriteMany 
   resources:
     requests:
       storage: {{ .Values.volumes.tv.size }}
   storageClassName: local-path 
-  volumeName: tv-pv
+  volumeName: plex-tv-pv
 
 ---
 
@@ -92,7 +107,22 @@ spec:
     requests:
       storage: {{ .Values.volumes.tv.size }}
   storageClassName: local-path 
-  volumeName: tv-pv
+  volumeName: sonarr-tv-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarr-torrent-tv-pvc
+spec:
+  accessModes:
+    - ReadWriteMany 
+  resources:
+    requests:
+      storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  volumeName: sonarr-torrent-tv-pv
 
 ---
 
@@ -110,4 +140,54 @@ spec:
     requests:
       storage: {{ .Values.volumes.movies.size }}
   storageClassName: local-path 
-  volumeName: movies-pv
+  volumeName: radarr-movies-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: radarr-torrent-movies-pvc
+spec:
+  accessModes:
+    - ReadWriteMany 
+  resources:
+    requests:
+      storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  volumeName: radarr-torrent-movies-pv
+
+---
+
+#####################################################
+### QBITTORRENT
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: torrent-movies-pvc
+spec:
+  accessModes:
+    - ReadWriteMany 
+  resources:
+    requests:
+      storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  volumeName: torrent-movies-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: torrent-tv-pvc
+spec:
+  accessModes:
+    - ReadWriteMany 
+  resources:
+    requests:
+      storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  volumeName: torrent-tv-pv
+
+---

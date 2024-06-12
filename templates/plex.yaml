@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: plex
+  name: {{ .Release.Name }}-plex
   labels:
     app: plex
 spec:
@@ -29,10 +29,10 @@ spec:
       volumes:
         - name: movies-storage
           persistentVolumeClaim:
-            claimName: movies-pvc  # PVC for movies
+            claimName: plex-movies-pvc  # PVC for movies
         - name: tv-storage
           persistentVolumeClaim:
-            claimName: tv-pvc  # PVC for TV shows
+            claimName: plex-tv-pvc  # PVC for TV shows
         - name: config-storage
           persistentVolumeClaim:
-            claimName: config-pvc  # PVC for config
+            claimName: plex-config-pvc  # PVC for config

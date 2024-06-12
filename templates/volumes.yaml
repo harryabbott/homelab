@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: movies-pv
+  name: plex-movies-pv
 spec:
   capacity:
     storage: {{ .Values.volumes.movies.size }}
@@ -17,7 +17,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: tv-pv
+  name: plex-tv-pv
 spec:
   capacity:
     storage: {{ .Values.volumes.tv.size }}
@@ -27,6 +27,67 @@ spec:
   hostPath:
     path: {{ .Values.volumes.tv.path}}
 
+---
+#### RADARR
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: radarr-movies-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.movies.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.movies.path}}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: radarr-torrent-movies-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.torrent.path }}/movies
+
+---
+#### SONARR
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sonarr-tv-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.tv.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.tv.path}}
+
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sonarr-torrent-tv-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.torrent.path }}/tv
 
 #####################################################
 ### CONFIG
@@ -40,7 +101,7 @@ spec:
     storage: {{ .Values.volumes.config.size }}
   storageClassName: local-path 
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   hostPath:
     path: {{ .Values.volumes.config.path }}/plex
 
@@ -54,7 +115,7 @@ spec:
     storage: {{ .Values.volumes.config.size }}
   storageClassName: local-path 
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   hostPath:
     path: {{ .Values.volumes.config.path }}/sonarr
 
@@ -62,13 +123,57 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: plex-config-pv
+  name: radarr-config-pv
 spec:
   capacity:
     storage: {{ .Values.volumes.config.size }}
   storageClassName: local-path 
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   hostPath:
     path: {{ .Values.volumes.config.path }}/radarr
 
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: torrent-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/torrent
+
+#####################################################
+### TORRENT
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: torrent-movies-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.torrent.path }}/movies
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: torrent-tv-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.torrent.path }}/tv

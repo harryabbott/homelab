@@ -1,6 +1,3 @@
-#TODO FIX TORRENTS VOLUME, MAKE MOUNT PATHS FOR VOLUMES
-
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,17 +16,17 @@ spec:
     spec:
       containers:
         - name: sonarr
-          image: linuxserver/sonarr:{{ .Values.sonarr.version }}"
+          image: linuxserver/sonarr:{{ .Values.sonarr.version }}
           ports:
             - containerPort: 8989
               name: sonarr
           volumeMounts:
             - name: config
-              mountPath:
+              mountPath: /config
             - name: tv
-              mountPath:
-            - name: torrents
-              mountPath:
+              mountPath: /data/media/tv
+            - name: torrents-tv
+              mountPath: /data/torrents/tv
       volumes:
         - name: config
           persistentVolumeClaim:
@@ -37,9 +34,9 @@ spec:
         - name: tv
           persistentVolumeClaim:
             claimName: sonarr-tv-pvc
-        - name: torrents
+        - name: torrents-tv
           persistentVolumeClaim:
-            claimName:
+            claimName: sonarr-torrent-tv-pvc
 
 ---
 
@@ -61,17 +58,17 @@ spec:
     spec:
       containers:
         - name: radarr
-          image: "linuxserver/radarr:{{ .Values.radarr.version }}"
+          image: linuxserver/radarr:{{ .Values.radarr.version }}
           ports:
             - containerPort: 7878
               name: radarr
           volumeMounts:
             - name: config
-              mountPath:
+              mountPath: /config
             - name: movies
-              mountPath:
-            - name: torrents
-              mountPath:
+              mountPath: /data/media/movies
+            - name: torrents-movies
+              mountPath: /data/torrents/movies
       volumes:
         - name: config
           persistentVolumeClaim:
@@ -79,6 +76,6 @@ spec:
         - name: movies
           persistentVolumeClaim:
             claimName: radarr-movies-pvc
-        - name: torrents
+        - name: torrents-movies
           persistentVolumeClaim:
-            claimName:
+            claimName: radarr-torrent-movies-pvc
