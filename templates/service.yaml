@@ -11,7 +11,7 @@ spec:
     - protocol: TCP
       port: 32400 # Service port
       targetPort: 32400 # Container port
-      nodePort: 30000
+      nodePort: {{ .Values.plex.nodeport }}
   selector:
     app: plex
 
@@ -29,7 +29,7 @@ spec:
     - protocol: TCP
       port: 8989
       targetPort: 8989
-      nodePort: 30001
+      nodePort: {{ .Values.sonarr.nodeport }}
   selector:
     app: sonarr
 
@@ -47,7 +47,7 @@ spec:
     - protocol: TCP
       port: 7878
       targetPort: 7878
-      nodePort: 30002
+      nodePort: {{ .Values.radarr.nodeport }}
   selector:
     app: radarr
 
@@ -65,6 +65,6 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 30003
+      nodePort: {{ .Values.qbittorrent.nodeport }}
   selector:
     app: qbittorrent
