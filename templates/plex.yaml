@@ -18,7 +18,8 @@ spec:
         - name: plex
           image: plexinc/pms-docker:{{ .Values.plex.version }}  # Plex Docker image
           ports:
-            - containerPort: {{ .Values.service.port }}  # Plex server port
+            - containerPort: 32400
+              name: plex
           volumeMounts:
             - name: movies-storage
               mountPath: /data/movies  # Mount path for movies

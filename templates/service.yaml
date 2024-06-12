@@ -5,10 +5,12 @@ metadata:
   labels:
     app: plex
 spec:
-  type: ClusterIP # It can be NodePort, LoadBalancer, etc. based on your requirements
+  type: NodePort
   ports:
-    - port: 32400 # Service port
+    - protocol: TCP
+      port: 32400 # Service port
       targetPort: 32400 # Container port
+      nodePort: 32400
   selector:
     app: plex
 
@@ -21,10 +23,12 @@ metadata:
   labels:
     app: sonarr
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
-    - port: 8989
+    - protocol: TCP
+      port: 8989
       targetPort: 8989
+      nodePort: 32500
   selector:
     app: sonarr
 
@@ -37,9 +41,11 @@ metadata:
   labels:
     app: radarr
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
-    - port: 7878
+    - protocol: TCP
+      port: 7878
       targetPort: 7878
+      nodePort: 32600
   selector:
     app: radarr

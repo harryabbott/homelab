@@ -13,11 +13,6 @@ volumes:
     size: "50Gi"
     path: "/mnt/data/torrents"
 
-service: #plex port
-  type: NodePort
-  port: 32400
-  nodePort: 30001
-
 plex:
   version: "1.40.2.8395-c67dce28e"
 
