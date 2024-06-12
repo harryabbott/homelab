@@ -34,7 +34,7 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: sonarr-config-pvc
+            claimName: torrent-config-pvc
         - name: torrent-movies
           persistentVolumeClaim:
             claimName: torrent-movies-pvc

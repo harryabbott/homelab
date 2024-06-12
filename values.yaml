@@ -1,13 +1,13 @@
 # Volume sizes for different data directories
 volumes:
   movies:
-    size: "100Gi"  # Size of the movies volume
+    size: "50Gi"  # Size of the movies volume
     path: "/mnt/data/movies"
   tv:
-    size: "100Gi"  # Size of the TV shows volume
+    size: "50Gi"  # Size of the TV shows volume
     path: "/mnt/data/tv"
   config:
-    size: "10Gi"  # Size of the config volume
+    size: "20Gi"  # Size of the config volume
     path: "/mnt/data/config"
   torrent:
     size: "50Gi"
@@ -22,5 +22,5 @@ radarr:
 sonarr:
   version: "4.0.5.1710-ls241"
 
-qbittorrent:
+qbittorrent: # add "WebUI\HostHeaderValidation=false" to the config for qbittorrent to access the webUI
   version: "4.6.5"
