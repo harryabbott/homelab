@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaresolverr
+  labels:
+    app: flaresolverr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flaresolverr
+  template:
+    metadata:
+      labels:
+        app: flaresolverr
+    spec:
+      containers:
+        - name: flaresolverr
+          image: flaresolverr/flaresolverr:{{ .Values.flaresolverr.version }}
+          ports:
+            - containerPort: 8191
+              name: flaresolverr
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: flaresolverr-config-pvc
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: flaresolverr-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce #only one pod has R/W on its conf
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  volumeName: flaresolverr-config-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: flaresolverr-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/flaresolverr
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaresolverr
+  labels:
+    app: flaresolverr
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8191
+      targetPort: 8191
+      nodePort: {{ .Values.flaresolverr.nodeport }}
+  selector:
+    app: flaresolverr

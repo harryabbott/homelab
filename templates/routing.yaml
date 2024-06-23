@@ -1,72 +1,75 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nginx-config
-data:
-  nginx.conf: |
-    events {
-      worker_connections 1024;
-    }
-    http {
-      server {
-        listen 80;
-        location /plex {
-          proxy_pass http://localhost:{{ .Values.plex.nodeport }};
-        }
-        location /sonarr {
-          proxy_pass http://localhost:{{ .Values.sonarr.nodeport }};
-        }
-        location /radarr {
-          proxy_pass http://localhost:{{ .Values.radarr.nodeport }};
-        }
-        location /qbittorrent {
-          proxy_pass http://localhost:{{ .Values.qbittorrent.nodeport }};
-        }
-      }
-    }
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: nginx-config
+# data:
+#   nginx.conf: |
+#     events {
+#       worker_connections 1024;
+#     }
+#     http {
+#       server {
+#         listen 80;
+#         location /plex {
+#           proxy_pass http://localhost:32400;
+#         }
+#         location /sonarr {
+#           proxy_pass http://localhost:8989;
+#         }
+#         location /radarr {
+#           proxy_pass http://localhost:7878;
+#         }
+#         location /qbittorrent {
+#           proxy_pass http://localhost:8080;
+#         }
+#         location /prowlarr {
+#           proxy_pass http://localhost:9696;
+#         }
+#       }
+#     }
 
----
+# ---
 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-reverse-proxy
-  labels:
-    app: nginx-reverse-proxy
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nginx-reverse-proxy
-  template:
-    metadata:
-      labels:
-        app: nginx-reverse-proxy
-    spec:
-      containers:
-        - name: nginx
-          image: "nginx:{{ .Values.nginx.version }}"
-          ports:
-            - containerPort: 80
-          volumeMounts:
-            - name: nginx-config-volume
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
-      volumes:
-        - name: nginx-config-volume
-          configMap:
-            name: nginx-config
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: nginx-reverse-proxy
+#   labels:
+#     app: nginx-reverse-proxy
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: nginx-reverse-proxy
+#   template:
+#     metadata:
+#       labels:
+#         app: nginx-reverse-proxy
+#     spec:
+#       containers:
+#         - name: nginx
+#           image: "nginx:{{ .Values.nginx.version }}"
+#           ports:
+#             - containerPort: 80
+#           volumeMounts:
+#             - name: nginx-config-volume
+#               mountPath: /etc/nginx/nginx.conf
+#               subPath: nginx.conf
+#       volumes:
+#         - name: nginx-config-volume
+#           configMap:
+#             name: nginx-config
 
----
+# ---
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-reverse-proxy
-spec:
-  type: NodePort
-  ports:
-    - port: 80
-      targetPort: 80
-  selector:
-    app: nginx-reverse-proxy
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: nginx-reverse-proxy
+# spec:
+#   type: NodePort
+#   ports:
+#     - port: 80
+#       targetPort: 80
+#   selector:
+#     app: nginx-reverse-proxy

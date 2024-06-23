@@ -89,6 +89,67 @@ spec:
   hostPath:
     path: {{ .Values.volumes.torrent.path }}/tv
 
+---
+#### prowlarr
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prowlarr-tv-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.tv.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.tv.path}}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prowlarr-torrent-tv-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.torrent.path }}/tv
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prowlarr-movies-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.movies.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.movies.path}}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prowlarr-torrent-movies-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.torrent.path }}/movies
+
 #####################################################
 ### CONFIG
 ---
@@ -146,6 +207,34 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: {{ .Values.volumes.config.path }}/torrent
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prowlarr-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/prowlarr
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ombi-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/ombi
 
 #####################################################
 ### TORRENT
