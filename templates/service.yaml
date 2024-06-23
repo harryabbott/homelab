@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-plex
+  name: plex
   labels:
     app: plex
 spec:
@@ -20,7 +20,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-sonarr
+  name: sonarr
   labels:
     app: sonarr
 spec:
@@ -38,7 +38,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-radarr
+  name: radarr
   labels:
     app: radarr
 spec:
@@ -56,7 +56,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-qbittorrent
+  name: qbittorrent
   labels:
     app: qbittorrent
 spec:
@@ -68,3 +68,39 @@ spec:
       nodePort: {{ .Values.qbittorrent.nodeport }}
   selector:
     app: qbittorrent
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prowlarr
+  labels:
+    app: prowlarr
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 9696
+      targetPort: 9696
+      nodePort: {{ .Values.prowlarr.nodeport }}
+  selector:
+    app: prowlarr
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ombi
+  labels:
+    app: ombi
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3579
+      targetPort: 3579
+      nodePort: {{ .Values.ombi.nodeport }}
+  selector:
+    app: ombi

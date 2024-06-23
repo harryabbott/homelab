@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-sonarr
+  name: sonarr
   labels:
     app: sonarr
 spec:
@@ -43,7 +43,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-radarr
+  name: radarr
   labels:
     app: radarr
 spec:
@@ -79,3 +79,56 @@ spec:
         - name: torrents-movies
           persistentVolumeClaim:
             claimName: radarr-torrent-movies-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  labels:
+    app: prowlarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      containers:
+        - name: prowlarr
+          image: linuxserver/prowlarr:{{ .Values.prowlarr.version }}
+          ports:
+            - containerPort: 9696
+              name: prowlarr
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: movies
+              mountPath: /data/media/movies
+            - name: torrents-movies
+              mountPath: /data/torrents/movies
+            - name: tv
+              mountPath: /data/media/tv
+            - name: torrents-tv
+              mountPath: /data/torrents/tv
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: prowlarr-config-pvc
+        - name: movies
+          persistentVolumeClaim:
+            claimName: prowlarr-movies-pvc
+        - name: torrents-movies
+          persistentVolumeClaim:
+            claimName: prowlarr-torrent-movies-pvc
+        - name: tv
+          persistentVolumeClaim:
+            claimName: prowlarr-tv-pvc
+        - name: torrents-tv
+          persistentVolumeClaim:
+            claimName: prowlarr-torrent-tv-pvc
+        

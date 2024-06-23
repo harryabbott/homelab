@@ -1,4 +1,4 @@
-# Volume sizes for different data directories
+# STORAGE
 volumes:
   movies:
     size: "50Gi"  # Size of the movies volume
@@ -13,6 +13,12 @@ volumes:
     size: "50Gi"
     path: "/mnt/data/torrents"
 
+# NETWORKING
+# configure DHCP so your server has a static IP. when connecting prowlarr/radarr/sonarr/qbittorrent, use this local static ip. 
+# do not use localhost, or your custom DNS name, since kubernetes has its own DNS (coredns in kube-system), so will not work. 
+# I think in theory, you can use the fqdn of the k8s svc, but i couldnt get this working and gave up.
+
+
 plex:
   version: "1.40.2.8395-c67dce28e"
   nodeport: 30000
@@ -25,9 +31,23 @@ sonarr:
   version: "4.0.5.1710-ls241"
   nodeport: 30002
 
-qbittorrent: # add "WebUI\HostHeaderValidation=false" to the config for qbittorrent to access the webUI. the config is write on shut down, so ensure you add this when the pod is off.
+qbittorrent: 
   version: "4.6.5"
   nodeport: 30003
+  # add "WebUI\HostHeaderValidation=false" to the config for qbittorrent to access the webUI. 
+  # the config is write on shut down, so ensure you add this when the pod is off.
 
 nginx:
   version: "1.27.0"
+
+prowlarr:
+  version: "1.18.0"
+  nodeport: 30004
+
+ombi:
+  version: "4.43.5"
+  nodeport: 30005
+
+flaresolverr:
+  version: "v3.3.20"
+  nodeport: 30006
