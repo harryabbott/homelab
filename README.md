@@ -44,7 +44,9 @@ I have a pi-hole for DNS, so i can assign local domain names.
 (Start with the stack switched off)
 1. Add in `WebUI\HostHeaderValidation=false` into the qBittorrent.conf
 2. Start the stack. you can now sign in using the credentials in the pod logs.
-3. Settings I changed:
+    - if this doesnt work, try add `WebUI\Password_PBKDF2="@ByteArray(ARQ77eY1NUZaQsuDHbIMCA==:0WMRkYTUWVT9wVvdDtHAjU9b3b7uB8NR1Gur2hmQCvCDpm39Q+PsJRJPaCU51dEiz+dTzh8qbPsL8WkFljQYFQ==)"`. this will set the username/pwd to admin/adminadmin.
+3. Change the username/password
+4. Settings I changed:
     1. delete .torrent files after (enabled)
     2. default torrent management mode (automatic)
     3. when torrent category changed (relocate torrent)
