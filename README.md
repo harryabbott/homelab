@@ -53,7 +53,7 @@ I have a pi-hole for DNS, so i can assign local domain names.
     4. when default save path changed (relocate affected torrents)
     5. when category save path changed (relocate affected torrents)
     6. use subcategories (enabled)
-    7. set the paths to our media directory (/data/media)
+    7. set the paths to our media directory (/data/media) - [useful link](https://www.reddit.com/r/qBittorrent/comments/6dr3rk/comment/di5cgjz/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
     8. hit the random button for a random port
 
 
