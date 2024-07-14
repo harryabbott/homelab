@@ -1,57 +1,58 @@
-{{- if .Values.ombi.enabled }}
+{{- if .Values.overseerr.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: ombi
+  name: overseerr
   labels:
-    app: ombi
+    app: overseerr
 spec:
   type: NodePort
   ports:
     - protocol: TCP
-      port: 3579
-      targetPort: 3579
-      nodePort: {{ .Values.ombi.nodeport }}
+      port: 5055
+      targetPort: 5055
+      nodePort: {{ .Values.overseerr.nodeport }}
   selector:
-    app: ombi
+    app: overseerr
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ombi
+  name: overseerr
   labels:
-    app: ombi
+    app: overseerr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ombi
+      app: overseerr
   template:
     metadata:
       labels:
-        app: ombi
+        app: overseerr
     spec:
       containers:
-        - name: ombi
-          image: linuxserver/ombi:{{ .Values.ombi.version }}
+        - name: overseerr
+          image: linuxserver/overseerr:{{ .Values.overseerr.version }}
           ports:
-            - containerPort: 3579
-              name: ombi
+            - containerPort: 5055
+              name: overseerr
           volumeMounts:
             - name: config
               mountPath: /config
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: ombi-config-pvc
+            claimName: overseerr-config-pvc
 
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ombi-config-pvc
+  name: overseerr-config-pvc
 spec:
   accessModes:
     - ReadWriteOnce #only one pod has R/W on its conf
@@ -59,13 +60,13 @@ spec:
     requests:
       storage: {{ .Values.volumes.config.size }}
   storageClassName: local-path 
-  volumeName: ombi-config-pv
+  volumeName: overseerr-config-pv
 
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: ombi-config-pv
+  name: overseerr-config-pv
 spec:
   capacity:
     storage: {{ .Values.volumes.config.size }}
@@ -73,6 +74,6 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: {{ .Values.volumes.config.path }}/ombi
+    path: {{ .Values.volumes.config.path }}/overseerr
 
 {{- end }}

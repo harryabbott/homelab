@@ -1,96 +1,81 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: qbittorrent
+  name: sonarr
   labels:
-    app: qbittorrent
+    app: sonarr
 spec:
   type: NodePort
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
-      nodePort: {{ .Values.qbittorrent.nodeport }}
+      port: 8989
+      targetPort: 8989
+      nodePort: {{ .Values.sonarr.nodeport }}
   selector:
-    app: qbittorrent
+    app: sonarr
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: qbittorrent
+  name: sonarr
   labels:
-    app: qbittorrent
+    app: sonarr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: qbittorrent
+      app: sonarr
   template:
     metadata:
       labels:
-        app: qbittorrent
+        app: sonarr
     spec:
       containers:
-        - name: qbittorrent
-          image: linuxserver/qbittorrent:{{ .Values.qbittorrent.version }}
+        - name: sonarr
+          image: linuxserver/sonarr:{{ .Values.sonarr.version }}
           ports:
-            - containerPort: 8080
-              name: qbittorrent
+            - containerPort: 8989
+              name: sonarr
           volumeMounts:
             - name: config
               mountPath: /config
-            - name: media
-              mountPath: /data/media
+            - name: tv
+              mountPath: /data/media/tv
             - name: torrents
-              mountPath: /data/torrents/
+              mountPath: /data/torrents
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: torrent-config-pvc
+            claimName: sonarr-config-pvc
+        - name: tv
+          persistentVolumeClaim:
+            claimName: sonarr-tv-pvc
         - name: torrents
           persistentVolumeClaim:
-            claimName: torrent-pvc
-        - name: media
-          persistentVolumeClaim:
-            claimName: media-pvc
+            claimName: sonarr-torrent-pvc
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: torrent-config-pvc
+  name: sonarr-config-pvc
 spec:
   accessModes:
-    - ReadWriteOnce #only 1 pod has R/W on its conf
+    - ReadWriteOnce #only one pod has R/W on its conf
   resources:
     requests:
       storage: {{ .Values.volumes.config.size }}
   storageClassName: local-path 
-  volumeName: torrent-config-pv
+  volumeName: sonarr-config-pv
 
 
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: torrent-config-pv
-spec:
-  capacity:
-    storage: {{ .Values.volumes.config.size }}
-  storageClassName: local-path 
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: {{ .Values.volumes.config.path }}/torrent
 
 ---
-
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: torrent-pvc
+  name: sonarr-torrent-pvc
 spec:
   accessModes:
     - ReadWriteMany 
@@ -98,13 +83,27 @@ spec:
     requests:
       storage: {{ .Values.volumes.torrent.size }}
   storageClassName: local-path 
-  volumeName: torrent-pv
+  volumeName: sonarr-torrent-pv
 
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: torrent-pv
+  name: sonarr-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/sonarr
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sonarr-torrent-pv
 spec:
   capacity:
     storage: {{ .Values.volumes.torrent.size }}
@@ -114,12 +113,12 @@ spec:
   hostPath:
     path: {{ .Values.volumes.torrent.path }}
 
-
 ---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: media-pvc
+  name: sonarr-tv-pvc
 spec:
   accessModes:
     - ReadWriteMany #plex pvc read only on media
@@ -127,13 +126,14 @@ spec:
     requests:
       storage: {{ .Values.volumes.media.size }}
   storageClassName: local-path 
-  volumeName: media-pv
+  volumeName: sonarr-tv-pv
 
 ---
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: media-pv
+  name: sonarr-tv-pv
 spec:
   capacity:
     storage: {{ .Values.volumes.media.size }}
@@ -141,5 +141,4 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: {{ .Values.volumes.media.path}}
-
+    path: {{ .Values.volumes.media.path}}/tv

@@ -5,4 +5,4 @@
 
 mkdir -p /mnt/data/{config,movies,tv,torrents}
 mkdir -p /mnt/data/config/{plex,sonarr,radarr,torrent,requests}
-mkdir -p /mnt/data/torrents/{movies,tv}
+

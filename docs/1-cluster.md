@@ -2,7 +2,7 @@
 ## Ubuntu 22 LTS
 machine hostname 'hp-elite'
 
-I have my router DHCP set to assign my server to 192.168.1.154. You'll wanna do this or ctrl+f and replace with your homelabs local ip (if anywhere). 
+I have my router DHCP set to assign my servers ethernet to 192.168.1.155 (wifi is .154). You'll wanna do this or ctrl+f and replace with your homelabs local ip (if I've left it in anywhere). 
 
 This is for when the homelab inevitably breaks, so i can rebuild it to the same (low) standards.
 

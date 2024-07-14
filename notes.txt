@@ -1,0 +1,12 @@
+Overseerr works and will trigger a search within radarr/sonarr
+
+Sonarr/Radarr do search and pass onto qbittorrent
+(Also search in prowlarr (incl flaresolvarr) seems to work, and schedules it for download with qbittorrent)
+
+Qbittorrent can download.
+
+Download is placed in the /mnt/data/media
+
+Library isnt auto updated in plex, but if manually done the film does show updated - might work with overseerr
+
+Film will play

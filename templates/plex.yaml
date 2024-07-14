@@ -1,3 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: plex
+  labels:
+    app: plex
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 32400 # Service port
+      targetPort: 32400 # Container port
+      nodePort: {{ .Values.plex.nodeport }}
+  selector:
+    app: plex
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,19 +38,74 @@ spec:
             - containerPort: 32400
               name: plex
           volumeMounts:
-            - name: movies-storage
-              mountPath: /data/movies  # Mount path for movies
-            - name: tv-storage
-              mountPath: /data/tv  # Mount path for TV shows
+            - name: media
+              mountPath: /data/media/ # Mount path for media
             - name: config-storage
               mountPath: /config  # Mount path for config
       volumes:
-        - name: movies-storage
+        - name: media
           persistentVolumeClaim:
-            claimName: plex-movies-pvc  # PVC for movies
-        - name: tv-storage
-          persistentVolumeClaim:
-            claimName: plex-tv-pvc  # PVC for TV shows
+            claimName: plex-media-pvc  # PVC for media
         - name: config-storage
           persistentVolumeClaim:
             claimName: plex-config-pvc  # PVC for config
+
+
+###### PV
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-media-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.media.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.media.path}}
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/plex
+
+##### PVC
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-pvc
+spec:
+  accessModes:
+    - ReadWriteMany 
+  resources:
+    requests:
+      storage: {{ .Values.volumes.media.size }}
+  storageClassName: local-path 
+  volumeName: plex-media-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce #only one pod has R/W on its conf
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  volumeName: plex-config-pv

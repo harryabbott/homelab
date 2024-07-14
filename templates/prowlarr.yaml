@@ -1,0 +1,143 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prowlarr
+  labels:
+    app: prowlarr
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 9696
+      targetPort: 9696
+      nodePort: {{ .Values.prowlarr.nodeport }}
+  selector:
+    app: prowlarr
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  labels:
+    app: prowlarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      containers:
+        - name: prowlarr
+          image: linuxserver/prowlarr:{{ .Values.prowlarr.version }}
+          ports:
+            - containerPort: 9696
+              name: prowlarr
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: /data/media
+            - name: torrents
+              mountPath: /data/torrents
+
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: prowlarr-config-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: prowlarr-media-pvc
+        - name: torrents
+          persistentVolumeClaim:
+            claimName: prowlarr-torrent-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prowlarr-media-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.media.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.media.path}}
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prowlarr-torrent-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.torrent.path }}
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prowlarr-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/prowlarr
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prowlarr-media-pvc
+spec:
+  accessModes:
+    - ReadWriteMany #plex pvc read only on media
+  resources:
+    requests:
+      storage: {{ .Values.volumes.media.size }}
+  storageClassName: local-path 
+  volumeName: prowlarr-media-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prowlarr-torrent-pvc
+spec:
+  accessModes:
+    - ReadWriteMany 
+  resources:
+    requests:
+      storage: {{ .Values.volumes.torrent.size }}
+  storageClassName: local-path 
+  volumeName: prowlarr-torrent-pv
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prowlarr-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce #only one pod has R/W on its conf
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  volumeName: prowlarr-config-pv
