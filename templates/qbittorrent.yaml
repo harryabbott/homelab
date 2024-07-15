@@ -41,8 +41,10 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
-            - name: media
-              mountPath: /data/media
+            - name: movies
+              mountPath: /data/media/radarr
+            - name: tv
+              mountPath: /data/media/tv-sonarr
             - name: torrents
               mountPath: /data/torrents/
       volumes:
@@ -52,9 +54,12 @@ spec:
         - name: torrents
           persistentVolumeClaim:
             claimName: torrent-pvc
-        - name: media
+        - name: movies
           persistentVolumeClaim:
-            claimName: media-pvc
+            claimName: qb-movies-pvc
+        - name: tv
+          persistentVolumeClaim:
+            claimName: qb-tv-pvc
 
 ---
 apiVersion: v1
@@ -119,7 +124,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: media-pvc
+  name: qb-movies-pvc
 spec:
   accessModes:
     - ReadWriteMany #plex pvc read only on media
@@ -127,13 +132,13 @@ spec:
     requests:
       storage: {{ .Values.volumes.media.size }}
   storageClassName: local-path 
-  volumeName: media-pv
+  volumeName: qb-movies-pv
 
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: media-pv
+  name: qb-movies-pv
 spec:
   capacity:
     storage: {{ .Values.volumes.media.size }}
@@ -141,5 +146,33 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: {{ .Values.volumes.media.path}}
+    path: {{ .Values.volumes.media.path}}/movies
 
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qb-tv-pvc
+spec:
+  accessModes:
+    - ReadWriteMany #plex pvc read only on media
+  resources:
+    requests:
+      storage: {{ .Values.volumes.media.size }}
+  storageClassName: local-path 
+  volumeName: qb-tv-pv
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qb-tv-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.media.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.media.path}}/tv
