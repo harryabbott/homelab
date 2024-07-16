@@ -24,3 +24,5 @@ This is for when the homelab inevitably breaks, so i can rebuild it to the same 
 - Enable k3s `sudo systemctl enable k3s`
 
 - Create the hosts mount paths with `./localvolumes.sh`
+
+- Install required CRD for pods split between wifi and ethernet `curl -o multus-daemonset.yml https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset.yml && kubectl apply -f multus-daemonset.yml`

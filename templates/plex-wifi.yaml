@@ -1,0 +1,30 @@
+# # WiFi connection is 192.168.1.154, which doesnt go over VPN, allowing public connection to plex server.
+# # VPN blocks the connection to plex from outside.
+
+# # Install required CRD
+# # curl -o multus-daemonset.yml https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset.yml && kubectl apply -f multus-daemonset.yml
+
+# # you need to change the 'master' to your network interface name, and the ipam.addresses.address to your (static) local ip for the WiFi. the gateway in my case is the router addr.
+# apiVersion: "k8s.cni.cncf.io/v1"
+# kind: NetworkAttachmentDefinition
+# metadata:
+#   name: wifi-net
+#   annotations:
+#     k8s.v1.cni.cncf.io/resourceName: "mywifi/network"
+# spec:
+#   config: '{
+#               "cniVersion": "0.3.1",
+#               "type": "macvlan",
+#               "master": "wlp0s20f3",
+#               "mode": "bridge",
+#               "ipam": {
+#                   "type": "static",
+#                   "addresses": [
+#                       {
+#                           "address": "192.168.1.154/24",
+#                           "gateway": "192.168.1.1"
+#                       }
+#                   ]
+#               }
+#           }'
+

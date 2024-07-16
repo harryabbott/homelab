@@ -1,0 +1,78 @@
+{{- if .Values.homarr.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: homarr
+  labels:
+    app: homarr
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 7575
+      targetPort: 7575
+      nodePort: {{ .Values.homarr.nodeport }}
+  selector:
+    app: homarr
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homarr
+  labels:
+    app: homarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homarr
+  template:
+    metadata:
+      labels:
+        app: homarr
+    spec:
+      containers:
+        - name: homarr
+          image: ghcr.io/ajnart/homarr:{{ .Values.homarr.version }}
+          ports:
+            - containerPort: 3000
+              name: homarr
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: homarr-config-pvc
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: homarr-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce #only one pod has R/W on its conf
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  volumeName: homarr-config-pv
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: homarr-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/homarr
+
+{{- end }}

@@ -56,3 +56,8 @@ overseerr:
   enabled: true
   version: "1.33.2"
   nodeport: 30007
+
+homarr:
+  enabled: true
+  version: "latest"
+  nodeport: 30303

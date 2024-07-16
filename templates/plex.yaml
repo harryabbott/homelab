@@ -22,7 +22,7 @@ metadata:
   labels:
     app: plex
 spec:
-  replicas: 1  # Number of Plex instances
+  replicas: 1
   selector:
     matchLabels:
       app: plex
@@ -30,6 +30,8 @@ spec:
     metadata:
       labels:
         app: plex
+      # annotations:
+      #   k8s.v1.cni.cncf.io/networks: wifi-net #see plex-wifi.yaml
     spec:
       containers:
         - name: plex

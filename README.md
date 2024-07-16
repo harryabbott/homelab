@@ -11,6 +11,7 @@ The media stack is:
 - **qbittorrent**   -    (downloads torrents)
 - **Overseerr** -    (Used to trigger searches for media. aka, a search function for shows/movies)
 - **Ombi**  -    (Same as overseerr, but wouldnt work for me)
+- **Homarr** -   ( Nice homepage for it all)
 
 
 ---
