@@ -4,11 +4,14 @@ volumes:
     size: "50Gi"
     path: "/mnt/data/media"
   config:
-    size: "20Gi"  # Size of the config volume
+    size: "20Gi"
     path: "/mnt/data/config"
   torrent:
     size: "50Gi"
-    path: "/mnt/data/torrents"
+    path: "/mnt/data/torrents" #contains the torrents
+  # downloads:
+  #   size: "50Gi"
+  #   path: "/mnt/data/downloads" #contains the downloads from qbittorrent. Sonarr/Radarr moves them from here to the media volume.
 
 # NETWORKING
 # configure DHCP so your server has a static IP. when connecting prowlarr/radarr/sonarr/qbittorrent, use this local static ip. 

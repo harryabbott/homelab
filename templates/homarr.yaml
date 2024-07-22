@@ -40,7 +40,7 @@ spec:
               name: homarr
           volumeMounts:
             - name: config
-              mountPath: /config
+              mountPath: /app/data/configs
       volumes:
         - name: config
           persistentVolumeClaim:
