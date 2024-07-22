@@ -42,8 +42,8 @@ spec:
               mountPath: /config
             - name: tv
               mountPath: /data/media/tv
-            - name: torrents
-              mountPath: /data/downloads
+            - name: torrents # within here is the torrents and the DL folder - also add a remote mapping?
+              mountPath: /data/torrents/downloads/tv-sonarr
       volumes:
         - name: config
           persistentVolumeClaim:
@@ -112,6 +112,7 @@ spec:
     - ReadWriteMany
   hostPath:
     path: {{ .Values.volumes.torrent.path }}
+# within here is the torrents and the DL folder
 
 ---
 
