@@ -1,0 +1,78 @@
+# Service for Tautulli
+apiVersion: v1
+kind: Service
+metadata:
+  name: tautulli
+  labels:
+    app: tautulli
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8181  # Tautulli web interface port
+      targetPort: 8181
+      nodePort: {{ .Values.tautulli.nodeport }}
+  selector:
+    app: tautulli
+
+---
+# Deployment for Tautulli
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tautulli
+  labels:
+    app: tautulli
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tautulli
+  template:
+    metadata:
+      labels:
+        app: tautulli
+    spec:
+      containers:
+        - name: tautulli
+          image: linuxserver/tautulli:{{ .Values.tautulli.version }}  # Tautulli Docker image
+          ports:
+            - containerPort: 8181
+              name: tautulli
+          volumeMounts:
+            - name: config-storage
+              mountPath: /config  # Mount path for Tautulli config
+      volumes:
+        - name: config-storage
+          persistentVolumeClaim:
+            claimName: tautulli-config-pvc
+
+---
+# PersistentVolume for Tautulli Config
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tautulli-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/tautulli
+
+---
+# PersistentVolumeClaim for Tautulli Config
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tautulli-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path
+  volumeName: tautulli-config-pv

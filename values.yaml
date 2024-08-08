@@ -9,9 +9,9 @@ volumes:
   torrent:
     size: "50Gi"
     path: "/mnt/data/torrents" #contains the torrents
-  # downloads:
-  #   size: "50Gi"
-  #   path: "/mnt/data/downloads" #contains the downloads from qbittorrent. Sonarr/Radarr moves them from here to the media volume.
+  downloads:
+    size: "50Gi"
+    path: "/mnt/data/downloads" #contains the downloads from qbittorrent. Sonarr/Radarr moves them from here to the media volume.
 
 # NETWORKING
 # configure DHCP so your server has a static IP. when connecting prowlarr/radarr/sonarr/qbittorrent, use this local static ip. 
@@ -64,3 +64,16 @@ homarr:
   enabled: true
   version: "latest"
   nodeport: 30303
+
+tdarr: #server makes the jobs, node does the actual transcoding. fixed to use integrated node for now
+  enabled: true
+  server:
+    version: "latest"
+    nodeport: 30008
+  node:
+    version: "latest"
+    nodeport: 30009
+
+tautulli:
+  version: "2.14.3"
+  nodeport: 30010

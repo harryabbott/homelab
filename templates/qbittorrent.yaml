@@ -47,6 +47,8 @@ spec:
               mountPath: /data/media/tv-sonarr
             - name: torrents
               mountPath: /data/torrents/
+            - name: downloads
+              mountPath: /data/downloads/
       volumes:
         - name: config
           persistentVolumeClaim:
@@ -60,6 +62,9 @@ spec:
         - name: tv
           persistentVolumeClaim:
             claimName: qb-tv-pvc
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: qb-downloads-pvc
 
 ---
 apiVersion: v1
@@ -176,3 +181,31 @@ spec:
     - ReadWriteMany
   hostPath:
     path: {{ .Values.volumes.media.path}}/tv
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qb-downloads-pvc
+spec:
+  accessModes:
+    - ReadWriteMany #plex pvc read only on media
+  resources:
+    requests:
+      storage: {{ .Values.volumes.downloads.size }}
+  storageClassName: local-path 
+  volumeName: qb-downloads-pv
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qb-downloads-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.downloads.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.downloads.path}}

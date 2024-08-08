@@ -77,3 +77,10 @@ These services are pretty much identical, so do the same for both.
 
 ## Overseerr
 1. Follow the setup wizard (sign in with plex, add libraries, add sonarr/radarr, etc..)
+
+## TDarr
+1. Access the webUI for the server, Ensure the node is present.
+2. Add the 2 plex libraries under the libraries tab, one for movies, one for tv
+
+## Tautulli
+1. Follow the setup wizard

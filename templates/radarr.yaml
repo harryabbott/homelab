@@ -43,6 +43,8 @@ spec:
             - name: media
               mountPath: /data/media/
             - name: torrents
+              mountPath: /data/torrents
+            - name: downloads
               mountPath: /data/downloads
       volumes:
         - name: config
@@ -54,6 +56,9 @@ spec:
         - name: torrents
           persistentVolumeClaim:
             claimName: radarr-torrent-pvc
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: radarr-downloads-pvc
 
 ---
 apiVersion: v1
@@ -131,7 +136,7 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: {{ .Values.volumes.media.path}}/movies
+    path: {{ .Values.volumes.media.path}}
 
 ---
 
@@ -147,3 +152,31 @@ spec:
       storage: {{ .Values.volumes.media.size }}
   storageClassName: local-path 
   volumeName: radarr-movies-pv
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: radarr-downloads-pvc
+spec:
+  accessModes:
+    - ReadWriteMany #plex pvc read only on media
+  resources:
+    requests:
+      storage: {{ .Values.volumes.downloads.size }}
+  storageClassName: local-path 
+  volumeName: radarr-downloads-pv
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: radarr-downloads-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.downloads.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.downloads.path}}

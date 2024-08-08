@@ -43,7 +43,9 @@ spec:
             - name: tv
               mountPath: /data/media/tv
             - name: torrents # within here is the torrents and the DL folder - also add a remote mapping?
-              mountPath: /data/torrents/downloads/tv-sonarr
+              mountPath: /data/torrents
+            - name: downloads
+              mountPath: /data/downloads
       volumes:
         - name: config
           persistentVolumeClaim:
@@ -54,6 +56,9 @@ spec:
         - name: torrents
           persistentVolumeClaim:
             claimName: sonarr-torrent-pvc
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: sonarr-downloads-pvc
 
 ---
 apiVersion: v1
@@ -143,3 +148,31 @@ spec:
     - ReadWriteMany
   hostPath:
     path: {{ .Values.volumes.media.path}}/tv
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarr-downloads-pvc
+spec:
+  accessModes:
+    - ReadWriteMany #plex pvc read only on media
+  resources:
+    requests:
+      storage: {{ .Values.volumes.downloads.size }}
+  storageClassName: local-path 
+  volumeName: sonarr-downloads-pv
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sonarr-downloads-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.downloads.size }}
+  storageClassName: local-path 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.volumes.downloads.path}}

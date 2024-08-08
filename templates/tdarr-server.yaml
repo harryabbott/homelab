@@ -1,0 +1,140 @@
+{{- if .Values.tdarr.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: tdarr-server
+  labels:
+    app: tdarr
+    component: server
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8265 # Tdarr Server port
+      targetPort: 8265
+      nodePort: {{ .Values.tdarr.server.nodeport }}
+  selector:
+    app: tdarr
+    component: server
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tdarr-server
+  labels:
+    app: tdarr
+    component: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tdarr
+      component: server
+  template:
+    metadata:
+      labels:
+        app: tdarr
+        component: server
+    spec:
+      containers:
+        - name: tdarr-server
+          image: ghcr.io/haveagitgat/tdarr:{{ .Values.tdarr.server.version }}
+          ports:
+            - containerPort: 8265
+              name: tdarr-server
+          env:
+            - name: internalNode
+              value: "true"
+          volumeMounts:
+            - name: config-storage
+              mountPath: /app/configs # server config
+            - name: media
+              mountPath: /app/media
+          resources:
+            requests:
+              cpu: "2000m"  # Request 2 cores
+            limits:
+              cpu: "4000m"  # Limit to 4 cores (i5 8500T has 6 cores)
+        # - name: tdarr-node
+        #   image: ghcr.io/haveagitgat/tdarr_node:{{ .Values.tdarr.node.version }} 
+        #   ports:
+        #     - containerPort: 8266
+        #       name: tdarr-node
+        #   volumeMounts:
+        #     - name: node-config-storage
+        #       mountPath: /app/configs # node config
+        #     - name: media
+        #       mountPath: /app/media
+        
+      volumes:
+        - name: config-storage
+          persistentVolumeClaim:
+            claimName: tdarr-server-config-pvc
+        # - name: node-config-storage
+        #   persistentVolumeClaim:
+        #     claimName: tdarr-node-config-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: plex-media-pvc
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tdarr-server-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.volumes.config.path }}/tdarr-server
+
+---
+# PersistentVolumeClaim for Tdarr Server Config
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tdarr-server-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.volumes.config.size }}
+  storageClassName: local-path
+  volumeName: tdarr-server-config-pv
+
+---
+# # PersistentVolume for Tdarr Node Config
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: tdarr-node-config-pv
+# spec:
+#   capacity:
+#     storage: {{ .Values.volumes.config.size }}
+#   storageClassName: local-path
+#   accessModes:
+#     - ReadWriteOnce
+#   hostPath:
+#     path: {{ .Values.volumes.config.path }}/tdarr-node
+
+# ---
+# # PersistentVolumeClaim for Tdarr Node Config
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: tdarr-node-config-pvc
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: {{ .Values.volumes.config.size }}
+#   storageClassName: local-path
+#   volumeName: tdarr-node-config-pv
+{{- end }}

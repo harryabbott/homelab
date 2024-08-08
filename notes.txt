@@ -1,3 +1,15 @@
 TODO:
-Move qb-downloads to its own PVC and folder figure out how this works with arr "Complete download management" since the torrent is paused after 24h seeding as of rn.
-    Currently qb DL goes to torrents pvc under torrents/downloads. messy.
+- Use kubedns not static IP. need to read up on svc
+- Swaparr to help with DLs with 0 seeders
+- Make pods share pvc (as tested with plex + tdarr)
+    - Downloads torrents and media should be on one PVC. the path can be controlled on application level. 
+        - Exclude config as noisy frequent config requests over network will kill speeds.
+- Change Sonarr/Radarr DL client categories to movies/tv (from radarr/tv-sonarr), will need to update in the downloaders in each app?
+- Fix Homarr dash and make sure config is saving properly by restarting to see if changes are ephemeral
+- when i have nas, add as storage device so not using pc path. (makes more agnostic and easier for multi node)
+- try use desktop pc as k8 node for faster transcoding (or pi? supports arm)
+
+DONE:
+- Tdarr to standardize media formatting
+- Tautulli for plex stats (see if transcoding is used to know if plex pass is worth it)
+- use internal tdarr node (envvar internalNode=true)
