@@ -1,15 +1,22 @@
 TODO:
+- Maintainarr (auto remove media thats large)
+- Homepage (less crap than homarr)
+- Swaparr (finds new DL if 0 seeders)
 - Use kubedns not static IP. need to read up on svc
+- get tdarr node config (currently integrated node config is ephemeral)
 - Swaparr to help with DLs with 0 seeders
 - Make pods share pvc (as tested with plex + tdarr)
     - Downloads torrents and media should be on one PVC. the path can be controlled on application level. 
         - Exclude config as noisy frequent config requests over network will kill speeds.
 - Change Sonarr/Radarr DL client categories to movies/tv (from radarr/tv-sonarr), will need to update in the downloaders in each app?
-- Fix Homarr dash and make sure config is saving properly by restarting to see if changes are ephemeral
-- when i have nas, add as storage device so not using pc path. (makes more agnostic and easier for multi node)
 - try use desktop pc as k8 node for faster transcoding (or pi? supports arm)
+
+TODO when NAS:
+- add nas as storage device so not using device path. (makes more agnostic and easier for multi node)
+- Move plex out of k8s and onto NAS (easier to configure hardware transcoding and direct connect)
 
 DONE:
 - Tdarr to standardize media formatting
 - Tautulli for plex stats (see if transcoding is used to know if plex pass is worth it)
 - use internal tdarr node (envvar internalNode=true)
+- Fix Homarr dash and make sure config is saving properly by restarting to see if changes are ephemeral
